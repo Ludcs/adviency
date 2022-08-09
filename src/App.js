@@ -2,7 +2,6 @@ import styled, {createGlobalStyle} from 'styled-components';
 import bgimage from './assets/img/bg-navidad.jpg';
 import {Form} from './components/Form';
 import {useState, useEffect} from 'react';
-// import {dbGifts} from './db/dbGifts';
 import {Gifts} from './components/Gifts';
 import {Modal} from './components/Modal';
 
@@ -43,12 +42,18 @@ export const App = () => {
       <BgContainer>
         <MainContainer>
           <h1>Regalos:</h1>
-          {/* {!openModal ? (
-            <button onClick={() => setOpenModal(true)}>Agregar Regalo</button>
-          ) : (
-            <Modal setOpenModal={setOpenModal} />
-          )} */}
-          <Form createGift={createGift} updateGift={updateGift} />
+          <ButtonAdd onClick={() => setOpenModal(true)}>
+            Agregar regalo
+          </ButtonAdd>
+          {openModal && (
+            <Modal>
+              <Form
+                createGift={createGift}
+                updateGift={updateGift}
+                setOpenModal={setOpenModal}
+              />
+            </Modal>
+          )}
           {gifts.length === 0 ? (
             <p>No hay regalos, agrega uno 🙏</p>
           ) : (
@@ -126,10 +131,25 @@ const MainContainer = styled.div`
   }
 `;
 
-const ButtonDelAll = styled.div`
+const ButtonAdd = styled.button`
   width: 100%;
-  height: 30px;
-  margin-top: 10px;
+  height: 40px;
+  background-color: #fd392b;
+  border-radius: 5px;
+  border: none;
+  color: white;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 3px 0px;
+  font-size: 18px;
+  cursor: pointer;
+`;
+
+const ButtonDelAll = styled.button`
+  width: 100%;
+  height: 40px;
+  margin-top: 20px;
   padding: 3px 0px;
   color: #fd392b;
   font-size: 18px;

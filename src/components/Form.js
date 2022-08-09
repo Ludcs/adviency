@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
 
-export const Form = ({createGift, updateGift}) => {
+export const Form = ({createGift, updateGift, setOpenModal}) => {
   const [formValue, setFormValue] = useState({
     entrygift: '',
     amount: 0,
@@ -26,6 +26,7 @@ export const Form = ({createGift, updateGift}) => {
     }
     createGift(formValue); //este formValue es lo que le llega como (data) a la fn que vive en App.js!
     handleReset();
+    setOpenModal(false);
   };
 
   const handleReset = () => {
@@ -63,32 +64,37 @@ export const Form = ({createGift, updateGift}) => {
           min="0"
           max="10"
         />
-        <button type="submit">Agregar</button>
+        <ContainerButtons>
+          <button id="closebtn" onClick={() => setOpenModal(false)}>
+            Cerrar
+          </button>
+          <button type="submit">Agregar</button>
+        </ContainerButtons>
       </form>
     </FormContainer>
   );
 };
 
 const FormContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 40px;
-  margin: 10px 0px;
+  width: 380px;
+  height: 330px;
+  padding: 20px;
+  margin: auto;
 
   form {
     width: 100%;
+    margin: auto;
     display: flex;
-    justify-content: space-between;
-    flex-direction: row;
-    gap: 10px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
   }
 
   input {
     border-radius: 5px;
     border: 1px solid lightgray;
-    width: 100px;
+    width: 100%;
     height: 35px;
     padding: 5px;
     font-size: 16px;
@@ -99,8 +105,19 @@ const FormContainer = styled.div`
   }
 
   #inputnumber {
-    width: 40px;
-    text-align: center;
+    width: 100%;
+    padding: 5px;
+  }
+
+  #closebtn {
+    background-color: white;
+    color: #757575;
+    border: 1px solid #757575;
+    border-radius: 5px;
+    height: 35px;
+    width: 70px;
+    padding: 5px;
+    font-size: 16px;
   }
 
   button {
@@ -109,6 +126,7 @@ const FormContainer = styled.div`
     border: 1px solid #fd392b;
     border-radius: 5px;
     height: 35px;
+    width: 70px;
     padding: 5px;
     font-size: 16px;
     transition: all ease-in-out 0.1s;
@@ -120,4 +138,10 @@ const FormContainer = styled.div`
       border: 1px solid #fd392b;
     }
   }
+`;
+
+const ContainerButtons = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 `;
