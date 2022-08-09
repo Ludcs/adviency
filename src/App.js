@@ -4,9 +4,11 @@ import {Form} from './components/Form';
 import {useState, useEffect} from 'react';
 // import {dbGifts} from './db/dbGifts';
 import {Gifts} from './components/Gifts';
+import {Modal} from './components/Modal';
 
 export const App = () => {
   const [gifts, setGifts] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     let data = localStorage.getItem('regalos');
@@ -19,8 +21,8 @@ export const App = () => {
     localStorage.setItem('regalos', JSON.stringify(gifts));
   }, [gifts]);
 
-  const createGift = (data, llave) => {
-    data.id = llave;
+  const createGift = (data) => {
+    data.id = Math.random();
 
     gifts.some((gift) => gift.entrygift === data.entrygift)
       ? alert('El regalo ya esta en la lista')
@@ -41,12 +43,12 @@ export const App = () => {
       <BgContainer>
         <MainContainer>
           <h1>Regalos:</h1>
-          <Form
-            gifts={gifts}
-            setGifts={setGifts}
-            createGift={createGift}
-            updateGift={updateGift}
-          />
+          {/* {!openModal ? (
+            <button onClick={() => setOpenModal(true)}>Agregar Regalo</button>
+          ) : (
+            <Modal setOpenModal={setOpenModal} />
+          )} */}
+          <Form createGift={createGift} updateGift={updateGift} />
           {gifts.length === 0 ? (
             <p>No hay regalos, agrega uno 🙏</p>
           ) : (
@@ -56,6 +58,7 @@ export const App = () => {
                 id={gift.id}
                 entrygift={gift.entrygift}
                 amount={gift.amount}
+                urlImg={gift.urlImg}
                 deleteGift={deleteGift}
               />
             ))
@@ -102,7 +105,9 @@ const BgContainer = styled.div`
 const MainContainer = styled.div`
   background-color: white;
   width: 400px;
-  height: 500px;
+  min-height: 500px;
+  max-height: 550px;
+  overflow-y: scroll;
   border-radius: 10px;
   padding: 10px 20px;
 
@@ -131,7 +136,9 @@ const ButtonDelAll = styled.div`
   text-align: center;
   background-color: white;
   border: 1px solid #fd392b;
+  border-radius: 5px;
   transition: all ease-in-out 0.1s;
+
   &:hover {
     cursor: pointer;
     color: white;

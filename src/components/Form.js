@@ -1,17 +1,16 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
-import {dbGifts} from '../db/dbGifts';
 
-export const Form = ({gifts, setGifts, createGift, updateGift}) => {
-  const [llave, setLlave] = useState(dbGifts.length + 1);
+export const Form = ({createGift, updateGift}) => {
   const [formValue, setFormValue] = useState({
     entrygift: '',
-    amount: 1,
-    id: llave,
+    amount: 0,
+    urlImg: '',
+    id: null,
   });
 
   const handleInputChange = (e) => {
-    console.log(e.target.value);
+    //console.log(e.target.value);
     setFormValue({
       ...formValue,
       [e.target.name]: e.target.value,
@@ -25,16 +24,17 @@ export const Form = ({gifts, setGifts, createGift, updateGift}) => {
       alert('No agregaste ningun regalo Grinch 😒');
       return;
     }
-    createGift(formValue, llave); //este formValue es lo que le llega como (data) a la fn que vive en App.js!
+    createGift(formValue); //este formValue es lo que le llega como (data) a la fn que vive en App.js!
     handleReset();
   };
 
   const handleReset = () => {
     setFormValue({
       entrygift: '',
-      id: llave + 1,
+      amount: 0,
+      urlImg: '',
+      id: null,
     });
-    setLlave(llave + 1);
   };
 
   return (
@@ -48,11 +48,19 @@ export const Form = ({gifts, setGifts, createGift, updateGift}) => {
           onChange={handleInputChange}
         />
         <input
+          type="url"
+          placeholder="http://giftimage..."
+          name="urlImg"
+          value={formValue.urlImg}
+          onChange={handleInputChange}
+        />
+        <input
+          id="inputnumber"
           type="number"
           name="amount"
           value={formValue.amount}
           onChange={handleInputChange}
-          min="1"
+          min="0"
           max="10"
         />
         <button type="submit">Agregar</button>
@@ -63,8 +71,8 @@ export const Form = ({gifts, setGifts, createGift, updateGift}) => {
 
 const FormContainer = styled.div`
   display: flex;
-  flex-direction: row;
   align-items: center;
+  justify-content: center;
   width: 100%;
   height: 40px;
   margin: 10px 0px;
@@ -73,16 +81,15 @@ const FormContainer = styled.div`
     width: 100%;
     display: flex;
     justify-content: space-between;
-
     flex-direction: row;
-    gap: 20px;
+    gap: 10px;
   }
 
   input {
     border-radius: 5px;
     border: 1px solid lightgray;
-    width: 300px;
-    height: 30px;
+    width: 100px;
+    height: 35px;
     padding: 5px;
     font-size: 16px;
 
@@ -91,13 +98,17 @@ const FormContainer = styled.div`
     }
   }
 
+  #inputnumber {
+    width: 40px;
+    text-align: center;
+  }
+
   button {
     background-color: white;
     color: #fd392b;
     border: 1px solid #fd392b;
     border-radius: 5px;
-    width: fit-content;
-    height: 30px;
+    height: 35px;
     padding: 5px;
     font-size: 16px;
     transition: all ease-in-out 0.1s;

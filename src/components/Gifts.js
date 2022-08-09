@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
-export const Gifts = ({entrygift, amount, id, deleteGift}) => {
+export const Gifts = ({entrygift, amount, urlImg, id, deleteGift}) => {
   return (
     <GifstContainer>
+      <img src={urlImg} alt="Imagen del regalo" />
       <p>{entrygift}</p>
       <p>Cantidad: {amount}</p>
       <button onClick={() => deleteGift(id)}>X</button>
@@ -17,9 +18,15 @@ const GifstContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 30px;
+  height: 50px;
   margin: auto;
   text-align: left;
+
+  img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+  }
 
   p {
     text-align: left;
