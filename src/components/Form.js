@@ -1,16 +1,30 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 
-export const Form = ({createGift, updateGift, setOpenModal}) => {
+export const Form = ({
+  createGift,
+  updateGift,
+  dataToEdit,
+  setDataToEdit,
+  setOpenModal,
+}) => {
   const [formValue, setFormValue] = useState({
     entrygift: '',
+    giftfor: '',
     amount: 0,
     urlImg: '',
     id: null,
   });
 
+  useEffect(() => {
+    if (dataToEdit) {
+      setFormValue(dataToEdit);
+    } else {
+      setFormValue(formValue);
+    }
+  }, [dataToEdit]);
+
   const handleInputChange = (e) => {
-    //console.log(e.target.value);
     setFormValue({
       ...formValue,
       [e.target.name]: e.target.value,
@@ -24,9 +38,16 @@ export const Form = ({createGift, updateGift, setOpenModal}) => {
       alert('No agregaste ningun regalo Grinch 😒');
       return;
     }
-    createGift(formValue); //este formValue es lo que le llega como (data) a la fn que vive en App.js!
+
+    if (formValue.id === null) {
+      createGift(formValue); //este formValue es lo que le llega como (data) a la fn que vive en App.js!
+    } else {
+      updateGift(formValue);
+    }
+
     handleReset();
     setOpenModal(false);
+    setDataToEdit(null);
   };
 
   const handleReset = () => {
@@ -49,6 +70,14 @@ export const Form = ({createGift, updateGift, setOpenModal}) => {
           onChange={handleInputChange}
         />
         <input
+          type="text"
+          placeholder="Es para..."
+          name="giftfor"
+          value={formValue.giftfor}
+          onChange={handleInputChange}
+        />
+
+        <input
           type="url"
           placeholder="http://giftimage..."
           name="urlImg"
@@ -68,7 +97,9 @@ export const Form = ({createGift, updateGift, setOpenModal}) => {
           <button id="closebtn" onClick={() => setOpenModal(false)}>
             Cerrar
           </button>
-          <button type="submit">Agregar</button>
+          <button type="submit">
+            {formValue.id === null ? 'Agregar' : 'Guardar'}
+          </button>
         </ContainerButtons>
       </form>
     </FormContainer>
@@ -77,7 +108,6 @@ export const Form = ({createGift, updateGift, setOpenModal}) => {
 
 const FormContainer = styled.div`
   width: 380px;
-  height: 330px;
   padding: 20px;
   margin: auto;
 

@@ -4,21 +4,36 @@ import {Form} from './components/Form';
 import {useState, useEffect} from 'react';
 import {Gifts} from './components/Gifts';
 import {Modal} from './components/Modal';
+import {api} from './api/api';
 
 export const App = () => {
   const [gifts, setGifts] = useState([]);
+  const [dataToEdit, setDataToEdit] = useState(null);
   const [openModal, setOpenModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    let data = localStorage.getItem('regalos');
-    if (data) {
-      setGifts(JSON.parse(data));
-    }
+    api
+      .gifts()
+      .then((gifts) => setGifts(gifts.data))
+      .catch(console.log)
+      .finally(() => setIsLoading(false));
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('regalos', JSON.stringify(gifts));
+    api.save(gifts).then(console.log).catch(console.log);
   }, [gifts]);
+
+  // useEffect(() => {
+  //   let data = localStorage.getItem('regalos');
+  //   if (data) {
+  //     setGifts(JSON.parse(data));
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   localStorage.setItem('regalos', JSON.stringify(gifts));
+  // }, [gifts]);
 
   const createGift = (data) => {
     data.id = Math.random();
@@ -28,7 +43,10 @@ export const App = () => {
       : setGifts([...gifts, data]);
   };
 
-  const updateGift = (data) => {};
+  const updateGift = (el) => {
+    let newData = gifts.map((gift) => (gift.id === el.id ? el : gift));
+    setGifts(newData);
+  };
 
   const deleteGift = (id) => {
     // let filteredGifts = gifts.filter((gift) => (gift.id === id ? false : true)); //FORMA LARGA.
@@ -41,37 +59,52 @@ export const App = () => {
       <GlobalStyles />
       <BgContainer>
         <MainContainer>
-          <h1>Regalos:</h1>
-          <ButtonAdd onClick={() => setOpenModal(true)}>
-            Agregar regalo
-          </ButtonAdd>
-          {openModal && (
-            <Modal>
-              <Form
-                createGift={createGift}
-                updateGift={updateGift}
-                setOpenModal={setOpenModal}
-              />
-            </Modal>
-          )}
-          {gifts.length === 0 ? (
-            <p>No hay regalos, agrega uno 🙏</p>
+          {isLoading ? (
+            <p
+              style={{
+                'text-align': 'center',
+                'font-size': '50px',
+              }}
+            >
+              Cargando
+            </p>
           ) : (
-            gifts.map((gift) => (
-              <Gifts
-                key={gift.id}
-                id={gift.id}
-                entrygift={gift.entrygift}
-                amount={gift.amount}
-                urlImg={gift.urlImg}
-                deleteGift={deleteGift}
-              />
-            ))
-          )}
-          {gifts.length === 0 ? null : (
-            <ButtonDelAll onClick={() => setGifts([])}>
-              Borrar todo
-            </ButtonDelAll>
+            <>
+              <h1>Regalos:</h1>
+              <ButtonAdd onClick={() => setOpenModal(true)}>
+                Agregar regalo
+              </ButtonAdd>
+              {openModal && (
+                <Modal>
+                  <Form
+                    createGift={createGift}
+                    updateGift={updateGift}
+                    dataToEdit={dataToEdit}
+                    setDataToEdit={setDataToEdit}
+                    setOpenModal={setOpenModal}
+                  />
+                </Modal>
+              )}
+              {gifts.length === 0 ? (
+                <p>No hay regalos, agrega uno 🙏</p>
+              ) : (
+                gifts.map((gift) => (
+                  <Gifts
+                    key={gift.id}
+                    el={gift}
+                    updateGift={updateGift}
+                    deleteGift={deleteGift}
+                    setDataToEdit={setDataToEdit}
+                    setOpenModal={setOpenModal}
+                  />
+                ))
+              )}
+              {gifts.length === 0 ? null : (
+                <ButtonDelAll onClick={() => setGifts([])}>
+                  Borrar todo
+                </ButtonDelAll>
+              )}
+            </>
           )}
         </MainContainer>
       </BgContainer>
@@ -126,7 +159,7 @@ const MainContainer = styled.div`
   p {
     text-align: left;
     color: #757575;
-    font-size: 18px;
+    font-size: 16px;
     padding: 5px;
   }
 `;

@@ -1,12 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
 
-export const Gifts = ({entrygift, amount, urlImg, id, deleteGift}) => {
+export const Gifts = ({el, deleteGift, setDataToEdit, setOpenModal}) => {
+  let {entrygift, giftfor, amount, urlImg, id} = el;
+
+  const modalEdit = () => {
+    setOpenModal(true);
+    setDataToEdit(el);
+  };
+
   return (
     <GifstContainer>
       <img src={urlImg} alt="Imagen del regalo" />
-      <p>{entrygift}</p>
+      <p>
+        {entrygift}
+        <br />
+        <i>{giftfor}</i>
+      </p>
+
       <p>Cantidad: {amount}</p>
+      <button onClick={() => modalEdit()}>E</button>
       <button onClick={() => deleteGift(id)}>X</button>
     </GifstContainer>
   );
@@ -21,6 +34,7 @@ const GifstContainer = styled.div`
   height: 50px;
   margin: auto;
   text-align: left;
+  margin-bottom: 5px;
 
   img {
     width: 50px;
@@ -34,6 +48,10 @@ const GifstContainer = styled.div`
     color: #757575;
     width: 33%;
     margin-right: 10px;
+
+    i {
+      font-size: 12px;
+    }
   }
 
   button {
@@ -43,6 +61,7 @@ const GifstContainer = styled.div`
     border: 1px solid #fd392b;
     color: white;
     border-radius: 5px;
+    margin-right: 5px;
     &:hover {
       cursor: pointer;
     }
