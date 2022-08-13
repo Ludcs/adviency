@@ -10,11 +10,22 @@ export const Form = ({
 }) => {
   const [formValue, setFormValue] = useState({
     entrygift: '',
+    price: '',
     giftfor: '',
     amount: 0,
     urlImg: '',
     id: null,
   });
+  const randomGift = [
+    'Bicicleta',
+    'Cafetera',
+    'Mochila',
+    'Ojotas',
+    'Lentes',
+    'Tatuaje',
+    'Perfume',
+    'Bonsai',
+  ];
 
   useEffect(() => {
     if (dataToEdit) {
@@ -53,14 +64,30 @@ export const Form = ({
   const handleReset = () => {
     setFormValue({
       entrygift: '',
+      price: '',
+      giftfor: '',
       amount: 0,
       urlImg: '',
       id: null,
     });
   };
 
+  const getRandomGift = () => {
+    let random = Math.floor(Math.random() * randomGift.length);
+
+    setFormValue({
+      ...formValue,
+      entrygift: randomGift[random],
+    });
+  };
+
   return (
     <FormContainer>
+      <Div>
+        <button id="surprise" onClick={() => getRandomGift()}>
+          Sorpréndeme 🎁
+        </button>
+      </Div>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -71,12 +98,18 @@ export const Form = ({
         />
         <input
           type="text"
+          placeholder="Precio..."
+          name="price"
+          value={formValue.price}
+          onChange={handleInputChange}
+        />
+        <input
+          type="text"
           placeholder="Es para..."
           name="giftfor"
           value={formValue.giftfor}
           onChange={handleInputChange}
         />
-
         <input
           type="url"
           placeholder="http://giftimage..."
@@ -97,9 +130,7 @@ export const Form = ({
           <button id="closebtn" onClick={() => setOpenModal(false)}>
             Cerrar
           </button>
-          <button type="submit">
-            {formValue.id === null ? 'Agregar' : 'Guardar'}
-          </button>
+          <button>{formValue.id === null ? 'Agregar' : 'Guardar'}</button>
         </ContainerButtons>
       </form>
     </FormContainer>
@@ -161,6 +192,32 @@ const FormContainer = styled.div`
     font-size: 16px;
     transition: all ease-in-out 0.1s;
 
+    &:hover {
+      cursor: pointer;
+      background-color: #fd392b;
+      color: white;
+      border: 1px solid #fd392b;
+    }
+  }
+`;
+
+const Div = styled.div`
+  display: flex;
+  justify-content: right;
+  width: 100%;
+  height: 36px;
+  margin-bottom: 20px;
+
+  #surprise {
+    background-color: white;
+    color: #fd392b;
+    border: 1px solid #fd392b;
+    border-radius: 5px;
+    width: fit-content;
+    height: 35px;
+    padding: 5px;
+    font-size: 16px;
+    transition: all ease-in-out 0.1s;
     &:hover {
       cursor: pointer;
       background-color: #fd392b;

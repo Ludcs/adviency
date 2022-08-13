@@ -2,11 +2,25 @@ import React from 'react';
 import styled from 'styled-components';
 
 export const Gifts = ({el, deleteGift, setDataToEdit, setOpenModal}) => {
-  let {entrygift, giftfor, amount, urlImg, id} = el;
+  let {entrygift, price, giftfor, amount, urlImg, id} = el;
 
   const modalEdit = () => {
     setOpenModal(true);
-    setDataToEdit(el);
+    setDataToEdit({
+      ...el,
+      price: parseInt(price) / amount,
+      amount: 1,
+    });
+  };
+
+  const modalDuplicated = () => {
+    setOpenModal(true);
+    setDataToEdit({
+      ...el,
+      price: parseInt(price) / amount,
+      amount: 1,
+      id: null,
+    });
   };
 
   return (
@@ -17,10 +31,12 @@ export const Gifts = ({el, deleteGift, setDataToEdit, setOpenModal}) => {
         <br />
         <i>{giftfor}</i>
       </p>
-
-      <p>Cantidad: {amount}</p>
+      <p>
+        ({amount}) - ${price}
+      </p>
+      <button onClick={() => modalDuplicated()}>D</button>
       <button onClick={() => modalEdit()}>E</button>
-      <button onClick={() => deleteGift(id)}>X</button>
+      <button onClick={() => deleteGift(id, entrygift, giftfor)}>X</button>
     </GifstContainer>
   );
 };

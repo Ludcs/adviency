@@ -4,6 +4,7 @@ import {Form} from './components/Form';
 import {useState, useEffect} from 'react';
 import {Gifts} from './components/Gifts';
 import {Modal} from './components/Modal';
+import {Preview} from './components/Preview';
 import {api} from './api/api';
 
 export const App = () => {
@@ -11,6 +12,7 @@ export const App = () => {
   const [dataToEdit, setDataToEdit] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [previous, setPrevious] = useState(false);
 
   useEffect(() => {
     api
@@ -37,21 +39,51 @@ export const App = () => {
 
   const createGift = (data) => {
     data.id = Math.random();
-
-    gifts.some((gift) => gift.entrygift === data.entrygift)
-      ? alert('El regalo ya esta en la lista')
+    data.price = parseInt(data.price) * data.amount;
+    console.log(data.price);
+    gifts.some(
+      (gift) =>
+        gift.entrygift === data.entrygift && gift.giftfor === data.giftfor
+    )
+      ? alert('Este regalo ya esta en la lista para esa persona')
       : setGifts([...gifts, data]);
   };
 
   const updateGift = (el) => {
+    el.price = parseInt(el.price) * el.amount;
     let newData = gifts.map((gift) => (gift.id === el.id ? el : gift));
     setGifts(newData);
   };
 
-  const deleteGift = (id) => {
-    // let filteredGifts = gifts.filter((gift) => (gift.id === id ? false : true)); //FORMA LARGA.
-    let filteredGifts = gifts.filter((gift) => gift.id !== id); //quedate con los gift cuyo id no sea igual al id que te pase por parametro!
-    setGifts(filteredGifts);
+  const deleteGift = (id, entrygift, giftfor) => {
+    let isDeleteGift = window.confirm(
+      `¿Estas seguro de eliminar ${entrygift} para ${giftfor} de la lista?`
+    );
+
+    if (isDeleteGift) {
+      // let filteredGifts = gifts.filter((gift) => (gift.id === id ? false : true)); //FORMA LARGA.
+      let filteredGifts = gifts.filter((gift) => gift.id !== id); //quedate con los gift cuyo id no sea igual al id que te pase por parametro!
+      setGifts(filteredGifts);
+    }
+  };
+
+  const deleteAll = () => {
+    let isDelete = window.confirm(
+      '¿Estas seguro de eliminar todos los regalos'
+    );
+
+    if (isDelete) {
+      setGifts([]);
+    }
+  };
+
+  let total = gifts.reduce((acc, gift) => {
+    return acc + gift.price;
+  }, 0);
+
+  const modalPreview = () => {
+    setOpenModal(true);
+    setPrevious(true);
   };
 
   return (
@@ -63,7 +95,7 @@ export const App = () => {
             <p
               style={{
                 'text-align': 'center',
-                'font-size': '50px',
+                'font-size': '40px',
               }}
             >
               Cargando
@@ -76,17 +108,32 @@ export const App = () => {
               </ButtonAdd>
               {openModal && (
                 <Modal>
-                  <Form
-                    createGift={createGift}
-                    updateGift={updateGift}
-                    dataToEdit={dataToEdit}
-                    setDataToEdit={setDataToEdit}
-                    setOpenModal={setOpenModal}
-                  />
+                  {previous ? (
+                    <Preview
+                      gifts={gifts}
+                      setOpenModal={setOpenModal}
+                      setPrevious={setPrevious}
+                    />
+                  ) : (
+                    <Form
+                      createGift={createGift}
+                      updateGift={updateGift}
+                      dataToEdit={dataToEdit}
+                      setDataToEdit={setDataToEdit}
+                      setOpenModal={setOpenModal}
+                    />
+                  )}
                 </Modal>
               )}
               {gifts.length === 0 ? (
-                <p>No hay regalos, agrega uno 🙏</p>
+                <p
+                  style={{
+                    'text-align': 'center',
+                    'font-size': '20px',
+                  }}
+                >
+                  🙏 No hay regalos, agrega uno 🙏
+                </p>
               ) : (
                 gifts.map((gift) => (
                   <Gifts
@@ -99,10 +146,29 @@ export const App = () => {
                   />
                 ))
               )}
+              <hr
+                style={{
+                  'margin-top': '15px',
+                }}
+              />
+              <p
+                style={{
+                  'text-align': 'center',
+                  'font-size': '20px',
+                  'margin-top': '5px',
+                }}
+              >
+                Total: ${total}
+              </p>
               {gifts.length === 0 ? null : (
-                <ButtonDelAll onClick={() => setGifts([])}>
-                  Borrar todo
-                </ButtonDelAll>
+                <>
+                  <ButtonDelAll onClick={() => deleteAll()}>
+                    Borrar todo
+                  </ButtonDelAll>
+                  <ButtonPreview onClick={() => modalPreview()}>
+                    Previsualizar
+                  </ButtonPreview>
+                </>
               )}
             </>
           )}
@@ -180,6 +246,27 @@ const ButtonAdd = styled.button`
 `;
 
 const ButtonDelAll = styled.button`
+  width: 100%;
+  height: 40px;
+  margin-top: 20px;
+  padding: 3px 0px;
+  color: #fd392b;
+  font-size: 18px;
+  text-align: center;
+  background-color: white;
+  border: 1px solid #fd392b;
+  border-radius: 5px;
+  transition: all ease-in-out 0.1s;
+
+  &:hover {
+    cursor: pointer;
+    color: white;
+    background-color: #fd392b;
+    border: 1px solid #fd392b;
+  }
+`;
+
+const ButtonPreview = styled.button`
   width: 100%;
   height: 40px;
   margin-top: 20px;
