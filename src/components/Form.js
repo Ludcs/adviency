@@ -125,8 +125,8 @@ export const Form = ({
           name="amount"
           value={formValue.amount}
           onChange={handleInputChange}
-          // min="0"
-          // max="10"
+          min="0"
+          max="10"
         />
         <ContainerButtons>
           <button id="closebtn" onClick={() => setOpenModal(false)}>
