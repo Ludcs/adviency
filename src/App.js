@@ -6,6 +6,12 @@ import {Gifts} from './components/Gifts';
 import {Modal} from './components/Modal';
 import {Preview} from './components/Preview';
 import {api} from './api/api';
+import On from './assets/icons/musicOn.svg';
+import Off from './assets/icons/musicOff.svg';
+import {ParticleBackground} from './components/ParticleBackground';
+import {Howl, Howler} from 'howler';
+import FnAudio from './audio/feliz-navidad.mp3';
+import {useRef} from 'react';
 
 export const App = () => {
   const [gifts, setGifts] = useState([]);
@@ -13,6 +19,7 @@ export const App = () => {
   const [openModal, setOpenModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [previous, setPrevious] = useState(false);
+  const [audio, setAudio] = useState(false);
 
   useEffect(() => {
     api
@@ -26,16 +33,26 @@ export const App = () => {
     api.save(gifts).then(console.log).catch(console.log);
   }, [gifts]);
 
-  // useEffect(() => {
-  //   let data = localStorage.getItem('regalos');
-  //   if (data) {
-  //     setGifts(JSON.parse(data));
-  //   }
-  // }, []);
+  const sound = useRef(
+    new Howl({
+      src: [FnAudio],
+      HTML5: true,
+      loop: true,
+      preload: true,
+    })
+  );
 
-  // useEffect(() => {
-  //   localStorage.setItem('regalos', JSON.stringify(gifts));
-  // }, [gifts]);
+  const handleSound = () => {
+    Howler.volume(0.3);
+    if (audio === false) {
+      setAudio(true);
+      sound.current.play();
+    }
+    if (audio === true) {
+      setAudio(false);
+      sound.current.pause();
+    }
+  };
 
   const createGift = (data) => {
     data.id = Math.random();
@@ -61,15 +78,14 @@ export const App = () => {
     );
 
     if (isDeleteGift) {
-      // let filteredGifts = gifts.filter((gift) => (gift.id === id ? false : true)); //FORMA LARGA.
-      let filteredGifts = gifts.filter((gift) => gift.id !== id); //quedate con los gift cuyo id no sea igual al id que te pase por parametro!
+      let filteredGifts = gifts.filter((gift) => gift.id !== id);
       setGifts(filteredGifts);
     }
   };
 
   const deleteAll = () => {
     let isDelete = window.confirm(
-      '¿Estas seguro de eliminar todos los regalos'
+      '¿Estas seguro de eliminar todos los regalos?'
     );
 
     if (isDelete) {
@@ -89,20 +105,43 @@ export const App = () => {
   return (
     <>
       <GlobalStyles />
+      <ParticleBackground />
       <BgContainer>
         <MainContainer>
           {isLoading ? (
             <p
               style={{
-                'text-align': 'center',
+                'text-align': 'left',
                 'font-size': '40px',
+                'padding-top': '10px',
               }}
             >
-              Cargando
+              Cargando...
             </p>
           ) : (
             <>
-              <h1>Regalos:</h1>
+              <TitleIconsContainer>
+                <h1>Regalos:</h1>
+                {audio ? (
+                  <>
+                    <img
+                      src={On}
+                      onClick={() => handleSound()}
+                      alt="Audio On"
+                      title="Stop audio"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <img
+                      src={Off}
+                      onClick={() => handleSound()}
+                      alt="Audio Off"
+                      title="Play audio"
+                    />
+                  </>
+                )}
+              </TitleIconsContainer>
               <ButtonAdd onClick={() => setOpenModal(true)}>
                 Agregar regalo
               </ButtonAdd>
@@ -208,12 +247,39 @@ const BgContainer = styled.div`
 
 const MainContainer = styled.div`
   background-color: white;
-  width: 400px;
   min-height: 500px;
-  max-height: 550px;
+  max-height: 500px;
   overflow-y: scroll;
   border-radius: 10px;
   padding: 10px 20px;
+  z-index: 100;
+
+  @media (max-width: 600px) {
+    width: 70%;
+    min-width: 350px;
+    margin: auto;
+  }
+  @media (min-width: 600px) {
+    width: 450px;
+  }
+
+  p {
+    text-align: left;
+    color: #757575;
+    font-size: 16px;
+
+    @media (max-width: 545px) {
+      font-size: 12px;
+    }
+  }
+`;
+
+const TitleIconsContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin: auto;
 
   h1 {
     font-family: 'Mountains of Christmas', cursive;
@@ -222,11 +288,8 @@ const MainContainer = styled.div`
     letter-spacing: 5px;
   }
 
-  p {
-    text-align: left;
-    color: #757575;
-    font-size: 16px;
-    padding: 5px;
+  img {
+    cursor: pointer;
   }
 `;
 

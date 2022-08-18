@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import styled from 'styled-components';
+import {useReactToPrint} from 'react-to-print';
 
 export const Preview = ({gifts, setOpenModal, setPrevious}) => {
   const closePreview = () => {
@@ -7,22 +8,34 @@ export const Preview = ({gifts, setOpenModal, setPrevious}) => {
     setPrevious(false);
   };
 
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: 'lista-de-regalos-de-navidad',
+    onAfterPrint: () => alert('🎅 Feliz Navidad 🎅'),
+  });
+
   return (
-    <PreviewContainer>
-      <h1>Comprar:</h1>
-      {gifts.map((gift) => (
-        <div key={gift.id}>
-          <img src={gift.urlImg} alt="Imagen del regalo" />
-          <p>
-            {gift.entrygift}
-            <br />
-            <i>{gift.giftfor}</i>
-          </p>
-          <p id="pAcount">({gift.amount})</p>
-        </div>
-      ))}
-      <button onClick={() => closePreview()}>Cerrar</button>
-    </PreviewContainer>
+    <>
+      <PreviewContainer ref={componentRef}>
+        <h1>Comprar:</h1>
+        {gifts.map((gift) => (
+          <GiftContainer key={gift.id}>
+            <img src={gift.urlImg} alt="Imagen del regalo" />
+            <p>
+              {gift.entrygift}
+              <br />
+              <i>{gift.giftfor}</i>
+            </p>
+            <p id="pAcount">({gift.amount})</p>
+          </GiftContainer>
+        ))}
+      </PreviewContainer>
+      <ButtonContainer>
+        <button onClick={() => closePreview()}>Cerrar</button>
+        <button onClick={handlePrint}>Imprimir</button>
+      </ButtonContainer>
+    </>
   );
 };
 
@@ -37,14 +50,6 @@ const PreviewContainer = styled.div`
     font-size: 50px;
     letter-spacing: 5px;
     margin-bottom: 10px;
-  }
-
-  div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: 45px;
-    gap: 20px;
   }
 
   img {
@@ -63,11 +68,30 @@ const PreviewContainer = styled.div`
       font-size: 12px;
     }
   }
+`;
+
+const GiftContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 45px;
+  gap: 20px;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  height: 45px;
+  margin: auto;
+  margin-left: 0px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 
   button {
-    width: 100%;
+    width: 40%;
     height: 40px;
-    margin-top: 20px;
     padding: 3px 0px;
     color: #fd392b;
     font-size: 18px;

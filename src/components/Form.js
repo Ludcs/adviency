@@ -51,7 +51,7 @@ export const Form = ({
     }
 
     if (formValue.id === null) {
-      createGift(formValue); //este formValue es lo que le llega como (data) a la fn que vive en App.js!
+      createGift(formValue);
     } else {
       updateGift(formValue);
     }
@@ -141,6 +141,12 @@ const FormContainer = styled.div`
   width: 380px;
   padding: 20px;
   margin: auto;
+
+  @media (max-width: 600px) {
+    width: 70%;
+    min-width: 350px;
+    margin: auto;
+  }
 
   form {
     width: 100%;

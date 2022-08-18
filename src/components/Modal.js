@@ -29,4 +29,10 @@ const ContainerModal = styled.div`
   background: #fff;
   border-radius: 5px;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+
+  @media (max-width: 600px) {
+    width: 70%;
+    min-width: 350px;
+    margin: auto;
+  }
 `;

@@ -27,16 +27,25 @@ export const Gifts = ({el, deleteGift, setDataToEdit, setOpenModal}) => {
     <GifstContainer>
       <img src={urlImg} alt="Imagen del regalo" />
       <p>
-        {entrygift}
+        {entrygift} <b>({amount})</b>
         <br />
         <i>{giftfor}</i>
       </p>
       <p>
-        ({amount}) - ${price}
+        <b>${price}</b>
       </p>
-      <button onClick={() => modalDuplicated()}>D</button>
-      <button onClick={() => modalEdit()}>E</button>
-      <button onClick={() => deleteGift(id, entrygift, giftfor)}>X</button>
+      <button onClick={() => modalDuplicated()} title="Duplicar">
+        D
+      </button>
+      <button onClick={() => modalEdit()} title="Editar">
+        E
+      </button>
+      <button
+        onClick={() => deleteGift(id, entrygift, giftfor)}
+        title="Eliminar"
+      >
+        X
+      </button>
     </GifstContainer>
   );
 };
@@ -56,6 +65,7 @@ const GifstContainer = styled.div`
     width: 50px;
     height: 50px;
     object-fit: contain;
+    margin-right: 1px;
   }
 
   p {
