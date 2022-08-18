@@ -12,7 +12,7 @@ export const Form = ({
     entrygift: '',
     price: '',
     giftfor: '',
-    amount: 0,
+    amount: '',
     urlImg: '',
     id: null,
   });
@@ -64,7 +64,7 @@ export const Form = ({
   const handleReset = () => {
     setFormValue({
       entrygift: '',
-      price: '',
+      price: 0,
       giftfor: '',
       amount: 0,
       urlImg: '',
@@ -97,8 +97,9 @@ export const Form = ({
           onChange={handleInputChange}
         />
         <input
-          type="text"
+          type="number"
           placeholder="Precio..."
+          className="no-spinner"
           name="price"
           value={formValue.price}
           onChange={handleInputChange}
@@ -120,11 +121,12 @@ export const Form = ({
         <input
           id="inputnumber"
           type="number"
+          placeholder="Cantidad"
           name="amount"
           value={formValue.amount}
           onChange={handleInputChange}
-          min="0"
-          max="10"
+          // min="0"
+          // max="10"
         />
         <ContainerButtons>
           <button id="closebtn" onClick={() => setOpenModal(false)}>
@@ -169,6 +171,16 @@ const FormContainer = styled.div`
     &:focus {
       outline: none;
     }
+  }
+
+  input[type='number'].no-spinner::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type='number'].no-spinner {
+    -moz-appearance: textfield;
   }
 
   #inputnumber {
