@@ -125,7 +125,7 @@ export const Form = ({
           name="amount"
           value={formValue.amount}
           onChange={handleInputChange}
-          min="0"
+          min="1"
           max="10"
         />
         <ContainerButtons>
