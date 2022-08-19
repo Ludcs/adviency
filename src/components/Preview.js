@@ -32,8 +32,8 @@ export const Preview = ({gifts, setOpenModal, setPrevious}) => {
         ))}
       </PreviewContainer>
       <ButtonContainer>
-        <button onClick={() => closePreview()}>Cerrar</button>
         <button onClick={handlePrint}>Imprimir</button>
+        <button onClick={() => closePreview()}>Cerrar</button>
       </ButtonContainer>
     </>
   );
@@ -41,8 +41,8 @@ export const Preview = ({gifts, setOpenModal, setPrevious}) => {
 
 const PreviewContainer = styled.div`
   width: 100%;
-  margin: auto;
-  padding: 15px;
+  padding: 15px 15px 15px 15px;
+  overflow-y: scroll;
 
   h1 {
     font-family: 'Mountains of Christmas', cursive;
@@ -80,17 +80,14 @@ const GiftContainer = styled.div`
 
 const ButtonContainer = styled.div`
   display: flex;
-  justify-content: space-around;
+  flex-direction: column;
+  gap: 20px;
   align-items: center;
   width: 100%;
-  height: 45px;
-  margin: auto;
-  margin-left: 0px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  padding: 10px 20px;
 
   button {
-    width: 40%;
+    width: 100%;
     height: 40px;
     padding: 3px 0px;
     color: #fd392b;

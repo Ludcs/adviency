@@ -24,8 +24,14 @@ const Overlay = styled.div`
 `;
 
 const ContainerModal = styled.div`
-  width: 400px;
-  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 500px;
+  max-height: 500px;
+
+  width: 450px;
+  padding-bottom: 10px;
   background: #fff;
   border-radius: 5px;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
@@ -34,5 +40,6 @@ const ContainerModal = styled.div`
     width: 70%;
     min-width: 350px;
     margin: auto;
+    padding: 10px;
   }
 `;

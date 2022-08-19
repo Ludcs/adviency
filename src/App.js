@@ -30,7 +30,7 @@ export const App = () => {
   }, []);
 
   useEffect(() => {
-    api.save(gifts).then(console.log).catch(console.log);
+    api.save(gifts);
   }, [gifts]);
 
   const sound = useRef(
@@ -57,7 +57,7 @@ export const App = () => {
   const createGift = (data) => {
     data.id = Math.random();
     data.price = parseInt(data.price) * data.amount;
-    console.log(data.price);
+
     gifts.some(
       (gift) =>
         gift.entrygift === data.entrygift && gift.giftfor === data.giftfor
@@ -111,9 +111,9 @@ export const App = () => {
           {isLoading ? (
             <p
               style={{
-                'text-align': 'left',
-                'font-size': '40px',
-                'padding-top': '10px',
+                textAlign: 'left',
+                fontSize: '40px',
+                paddingTop: '10px',
               }}
             >
               Cargando...
@@ -164,37 +164,39 @@ export const App = () => {
                   )}
                 </Modal>
               )}
-              {gifts.length === 0 ? (
-                <p
-                  style={{
-                    'text-align': 'center',
-                    'font-size': '20px',
-                  }}
-                >
-                  🙏 No hay regalos, agrega uno 🙏
-                </p>
-              ) : (
-                gifts.map((gift) => (
-                  <Gifts
-                    key={gift.id}
-                    el={gift}
-                    updateGift={updateGift}
-                    deleteGift={deleteGift}
-                    setDataToEdit={setDataToEdit}
-                    setOpenModal={setOpenModal}
-                  />
-                ))
-              )}
+              <DIIIV>
+                {gifts.length === 0 ? (
+                  <p
+                    style={{
+                      textAlign: 'center',
+                      fontSize: '20px',
+                    }}
+                  >
+                    🙏 No hay regalos, agrega uno 🙏
+                  </p>
+                ) : (
+                  gifts.map((gift) => (
+                    <Gifts
+                      key={gift.id}
+                      el={gift}
+                      updateGift={updateGift}
+                      deleteGift={deleteGift}
+                      setDataToEdit={setDataToEdit}
+                      setOpenModal={setOpenModal}
+                    />
+                  ))
+                )}
+              </DIIIV>
               <hr
                 style={{
-                  'margin-top': '15px',
+                  marginTop: '15px',
                 }}
               />
               <p
                 style={{
-                  'text-align': 'center',
-                  'font-size': '20px',
-                  'margin-top': '5px',
+                  textAlign: 'center',
+                  fontSize: '20px',
+                  marginTop: '5px',
                 }}
               >
                 Total: ${total}
@@ -249,7 +251,6 @@ const MainContainer = styled.div`
   background-color: white;
   min-height: 500px;
   max-height: 500px;
-  overflow-y: scroll;
   border-radius: 10px;
   padding: 10px 20px;
   z-index: 100;
@@ -348,4 +349,11 @@ const ButtonPreview = styled.button`
     background-color: #fd392b;
     border: 1px solid #fd392b;
   }
+`;
+
+const DIIIV = styled.div`
+  margin: auto;
+  width: 100%;
+  height: 160px;
+  overflow-y: scroll;
 `;
